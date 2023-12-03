@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { SignUp } from "./SignUp.jsx";
 
 export const Navbar = () => {
 	return (
@@ -8,12 +9,18 @@ export const Navbar = () => {
 				<Link to="/">
 					<span className="navbar-brand mb-0 h1">React Boilerplate</span>
 				</Link>
-				<div className="ml-auto">
+				<div className="d-flex justify-content-end">
+				
+					<Link to="/">
+						<SignUp className="btn btn-primary">SignUp</SignUp>
+					</Link>				
+								
 					<Link to="/demo">
-						<button className="btn btn-primary">Check the Context in action</button>
+						<button className="btn btn-success">Login</button>
 					</Link>
 				</div>
-			</div>
+				</div>
+			
 		</nav>
 	);
 };
