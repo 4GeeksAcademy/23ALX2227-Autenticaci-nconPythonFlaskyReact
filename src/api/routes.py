@@ -18,8 +18,7 @@ api = Blueprint('api', __name__)
 CORS(api)
 
 app=Flask(__name__)
-secret_key=secrets.token_hex(32)
-app.config["JWT_SECRET_KEY"] = secret_key
+app.config["JWT_SECRET_KEY"] = "super-secret"
 jwt=JWTManager(app)
 bcrypt=Bcrypt(app)
 
