@@ -30,13 +30,19 @@ const Login = () => {
         console.log("iniciamos sesion en el nuevo usuario")
         console.log(token)
         sessionStorage.setItem("userToken",token)
-        await actions.getInformationOfToken()
+        // await actions.getInformationOfToken()
 
-        sessionStorage.setItem("userEmail",store.informationUserLogin.email)
-        sessionStorage.setItem("userName",store.informationUserLogin.user_name)
-        sessionStorage.setItem("userId",store.informationUserLogin.user_id)
+        // sessionStorage.setItem("userEmail",store.informationUserLogin.email)
+        // sessionStorage.setItem("userName",store.informationUserLogin.user_name)
+        // sessionStorage.setItem("userId",store.informationUserLogin.user_id)
+        if(store.tokenUser.accessToken) {
+          goToPrivate("/private")
 
-        goToPrivate("/private")
+        } else {
+          alert("Algo salio mal al logearte")
+        }
+
+        
     }
       catch(e){
         console.log("An error was occurred, check it out", e)
@@ -48,10 +54,10 @@ const Login = () => {
           <form 
           ref={formRef}
           id='contact-form' className='form-signup'>
-              <label className='label-signup' for="email">Email:</label>
+              <label className='label-signup' htmlFor="email">Email:</label>
               <input className='input-signup' type="email" id="email" name="email" onChange={(e)=>(handleInputForm(e.target.value, e.target.name))} required/>
     
-              <label className='label-signup' for="password">Password:</label>
+              <label className='label-signup' htmlFor="password">Password:</label>
               <input className='input-signup' type="password" id="password" name="password"  onChange={(e)=>(handleInputForm(e.target.value, e.target.name))} required/>
   
               <button className="button-signup" type="button" onClick={()=>handleSubmit(login)}>Login</button>

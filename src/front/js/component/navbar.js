@@ -9,9 +9,8 @@ export const Navbar = () => {
 		<nav className="navbar navbar-light bg-light">
 			<div className="container">
 				<Link to="/">
-					<span className="navbar-brand mb-0 h1">React Boilerplate</span>
-				</Link>
-				<div className="ml-auto">
+					<span className="navbar-brand mb-0 h1">AuthenticationJWT</span>
+				</Link><div className="ml-auto">
 					{
 						storageTokenItem?
 						(<div>
@@ -19,19 +18,19 @@ export const Navbar = () => {
 						</div>)
 						:
 						(<Link to="/signup">
-						<button className="btn btn-primary">Click here if you want to Sign up!</button>
-					</Link>)
+						<button className="btn btn-primary">SignUp</button>
+					    </Link>)
 				
 					}
 					
-				</div>
+				</div>				
 				<div className="ml-auto">
 					{storageTokenItem?(
 						<></>
 					):(
 						<Link to="/login">
-						<button className="btn btn-primary login" style={{backgroundColor:"green"}}>Click here if you want to Login!</button>
-					</Link>
+						<button className="btn btn-primary login" style={{backgroundColor:"green"}}>Login</button>
+					    </Link>
 					)}
 					
 				</div>

@@ -29,7 +29,7 @@ const Signup = () => {
       alert(`The user with the name  ${store.messageToShowAlert.user_created} was created succesfully`)
       formRef.current.reset()
       setSignup(store.formSignup)
-      goToHome("/")
+      goToHome("/login")
     }
     catch(e){
       console.log("An error was occurred, check it out", e)
@@ -41,24 +41,24 @@ const Signup = () => {
         <form 
         ref={formRef}
         id='contact-form' className='form-signup'>
-            <label className='label-signup' for="email">Email:</label>
+            <label className='label-signup' htmlFor="email">Email:</label>
             <input className='input-signup' type="email" id="email" name="email" onChange={(e)=>(handleInputForm(e.target.value, e.target.name))} required/>
 
-            <label className='label-signup' for="first_name">First Name:</label>
+            <label className='label-signup' htmlFor="first_name">First Name:</label>
             <input className='input-signup' type="text" id="first_name" name="first_name" onChange={(e)=>(handleInputForm(e.target.value, e.target.name))} required/>
-            <label className='label-signup' for="second_name">Last Name:</label>
+            <label className='label-signup' htmlFor="second_name">Last Name:</label>
             <input className='input-signup' type="text" id="second_name" name="second_name" onChange={(e)=>(handleInputForm(e.target.value, e.target.name))} required/>
 
-            <label className='label-signup' for="password">Password:</label>
+            <label className='label-signup' htmlFor="password">Password:</label>
             <input className='input-signup' type="password" id="password" name="password"  onChange={(e)=>(handleInputForm(e.target.value, e.target.name))} required/>
 
-            <label className='label-signup' for="age_user">Age:</label>
+            <label className='label-signup' htmlFor="age_user">Age:</label>
             <input  className='input-signup' type="number" id="age_user" name="age_user" onChange={(e)=>(handleInputForm(e.target.value, e.target.name))} required/>
 
-            <label className='label-signup' for="country_user">Country:</label>
+            <label className='label-signup' htmlFor="country_user">Country:</label>
             <input className='input-signup' type="text" id="country_user" name="country_user" onChange={(e)=>(handleInputForm(e.target.value, e.target.name))} required/>
 
-            <label className='label-signup' for="user_name">Username:</label>
+            <label className='label-signup' htmlFor="user_name">Username:</label>
             <input className='input-signup' type="text" id="user_name" name="user_name" onChange={(e)=>(handleInputForm(e.target.value, e.target.name))} required/>
 
             <button className="button-signup" type="button" onClick={()=>handleSubmit(signup)}>Sign Up</button>

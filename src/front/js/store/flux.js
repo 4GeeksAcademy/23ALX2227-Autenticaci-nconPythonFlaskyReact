@@ -112,7 +112,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 						const jsonResponse= await response.json()
 						const store=getStore()
 						setStore({...store,tokenUser:jsonResponse})
-						console.log(jsonResponse)
+						console.log("ESTA ES LA DATA: ",jsonResponse)
+						sessionStorage.setItem('userName', jsonResponse.name);
+						sessionStorage.setItem('userEmail', jsonResponse.email);
+						sessionStorage.setItem('userId', jsonResponse.id);
+
 
 					}
 					else{

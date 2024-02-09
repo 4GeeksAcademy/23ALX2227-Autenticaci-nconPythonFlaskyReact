@@ -84,9 +84,11 @@ def get_token():
         is_correctly_the_password=bcrypt.check_password_hash(check_password_of_existing_user,password)
         
         if is_correctly_the_password:
-            user_id=get_user_by_email.id            
+            user_id=get_user_by_email.id
+            user_email = get_user_by_email.email
+            user_name = get_user_by_email.user_name            
             access_token=create_access_token(identity=user_id)
-            return jsonify({"accessToken":access_token}),200
+            return jsonify({"accessToken":access_token, "ok": True, "id": user_id, "email": user_email, "name": user_name }),200
         else:
             return jsonify ({"Error":"The password does not exist"}),401
     
