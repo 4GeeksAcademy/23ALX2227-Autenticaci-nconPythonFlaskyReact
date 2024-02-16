@@ -1,135 +1,82 @@
 """
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
-import secrets
-from flask import Flask, request, jsonify, url_for, Blueprint
+
+from flask_jwt_extended import create_access_token, create_refresh_token, get_jwt_identity, jwt_required
+from flask import Flask, request, jsonify, url_for, Blueprint, current_app, redirect, url_for, session
 from api.models import db, User
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
-from jwt.exceptions import ExpiredSignatureError
-from flask_jwt_extended import  JWTManager, create_access_token, jwt_required, get_jwt_identity
-from flask_bcrypt import Bcrypt
-import logging
-
-
+ 
 
 api = Blueprint('api', __name__)
+
 # Allow CORS requests to this API
 CORS(api)
 
-app=Flask(__name__)
-app.config["JWT_SECRET_KEY"] = "super-secret"
-jwt=JWTManager(app)
-bcrypt=Bcrypt(app)
-
-
-
-@api.route('/hello', methods=['GET'])
-def handle_hello():
-
-    response_body = {
-        "message": "Hello! I'm a message that came from the backend, check the network tab on the google inspector and you will see the GET request"
-        }
-    
-    return jsonify(response_body), 200
-
-
-@api.route("/signup", methods=['POST'])
-def signup():
+@api.route('/signup', methods=['POST'])
+def create_user():
     try:
-        email=request.json.get("email")
-        password=request.json.get("password")
-        first_name=request.json.get("first_name")
-        second_name=request.json.get("second_name")
-        age_user=request.json.get("age_user")
-        country_user=request.json.get("country_user")
-        user_name=request.json.get("user_name")
+        email = request.json.get('email')
+        name = request.json.get('name')
+        address = request.json.get('address')
+        birth_date = request.json.get('birth_date')
+        password = request.json.get('password')
+
+
+        if not email or not name or not birth_date or not address or not password:
+            return jsonify({'error': 'All fields are required'}), 400
         
-        
-        if not email or not first_name or not password or not second_name or not age_user or not country_user or not user_name:
-            return jsonify({"error":"You are missing information, check it out"}),400
-        
-        existing_user=User.query.filter_by(email=email).first()
+        existing_user = User.query.filter_by(email=email).first()
         if existing_user:
-            return jsonify({"Error":"The email already exist"}),400
-
-        password_hash=bcrypt.generate_password_hash(password).decode("utf-8")
-
-        new_user=User(email=email,password=password_hash,first_name=first_name,second_name=second_name,age_user=age_user,country_user=country_user,user_name=user_name)
+            return jsonify({'error': 'User already exist'}), 409
         
+        password_hash = current_app.bcrypt.generate_password_hash(password).decode('utf-8')
+        new_user = User(email=email, name=name, address=address, birth_date=birth_date, password= password_hash)
         db.session.add(new_user)
         db.session.commit()
-
-        return jsonify({"message":"User created Succesfully!","user_created":user_name}),200
-
-
-    except Exception as e:
-        return jsonify({"Error:":"Error in user creation: "+str(e)}),400
+        return jsonify({"message": "user created successfully", "user_createdd": new_user.serialize()}), 201
 
 
+    except Exception as error:
+        return  jsonify({'error': 'Error in user creation: ' + str(error)}), 500
 
-@api.route("/token", methods=["POST"])
-def get_token():
+
+@api.route('/login', methods=['POST'])
+def log_in():
     try:
-        email=request.json['email']
-        password=request.json['password']
+        email= request.json.get('email')
+        password = request.json.get('password')
+
+
         if not email or not password:
-            return jsonify({"error": "Email and password are required."}),400
-    
-        #this is another option
-        # get_user_by_email=User.query.filter_by(email=email).first()
-
-        get_user_by_email=User.query.filter_by(email=email).one()
-        check_password_of_existing_user=get_user_by_email.password
-        is_correctly_the_password=bcrypt.check_password_hash(check_password_of_existing_user,password)
+            return jsonify({'error': 'Email and password are required.'}), 400
         
-        if is_correctly_the_password:
-            user_id=get_user_by_email.id
-            user_email = get_user_by_email.email
-            user_name = get_user_by_email.user_name            
-            access_token=create_access_token(identity=user_id)
-            return jsonify({"accessToken":access_token, "ok": True, "id": user_id, "email": user_email, "name": user_name }),200
+        login_user = User.query.filter_by(email=request.json['email']).one()
+
+        password_from_db =  login_user.password
+        true_o_false = current_app.bcrypt.check_password_hash(password_from_db, password)
+
+        if true_o_false:
+            user_id = login_user.id
+            access_token = create_access_token(identity=user_id)
+            return jsonify({ 'access_token':access_token, "access": True}), 200
+    
         else:
-            return jsonify ({"Error":"The password does not exist"}),401
-    
+            return{"Error": "Wrong password", "access": False}, 400
 
-    except Exception as e:
-        return jsonify({"Error:": "The email is wrong "+ str(e)}),400
-    
+    except Exception as error:
+        return jsonify({"error": 'User email is not registered' + str(error)}), 500
 
-@api.route("/private")
+
+
+@api.route('/private')
 @jwt_required()
-def get_private():
-    try:
-        user_validation=get_jwt_identity()
-        if user_validation:
-            user=User.query.get(user_validation)
-            return jsonify({"message":"Token is valid", "user_id":user.id,"email":user.email,"user_name":user.user_name}),200
-    
-    except ExpiredSignatureError:
-        logging.warning("Token has expired")
-        return jsonify({"Error":"Token has expired"}),401
+def new_session():
+    current_user_id = get_jwt_identity()
+    if current_user_id:
+        
+        return({"message":"View unlocked"}), 200
+    else:
 
-    except Exception as e:
-        logging.error("Token verification error: "+ str(e))
-        return jsonify({"Error":"The token is invalid"+str(e)}),400
-
-
-@api.route("/users")
-def get_all_users():
-    users=User.query.all()
-    user_list=[]
-    for user in users:
-        user_dict={
-            "id":user.id,
-            "email":user.email,
-            "password":user.password,
-            "first_name":user.first_name,
-            "second_name":user.second_name,
-            "age_user":user.age_user,
-            "country_user":user.country_user,
-            "user_name":user.user_name
-        }
-        user_list.append(user_dict)
-    
-    return jsonify(user_list),200
+        return jsonify({"error": "You do not have  access to this page"}), 400

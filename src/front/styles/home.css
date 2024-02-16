@@ -5,3 +5,58 @@
     one more css for each page that will contain the selected used 
     on that page only (the ones not reused in other pages).
 */
+h1 {
+    color: aliceblue;
+}
+body{
+    background-color: black;
+}
+
+.navbar{
+    background-color: rgb(20, 10, 10);
+
+}
+
+.mainContent{
+justify-content: center;}
+
+.leftSide{
+    background-color: antiquewhite;
+    width: 30%;
+}
+
+.rightSide{
+    background-color: black;
+    width: 30%;
+
+}
+.card{
+    width: 100%;
+    height: 100%;
+}
+
+.leftCard{
+    background-color: rgb(49, 49, 49);
+    border: solid 2px rgb(228, 228, 228);
+}
+
+.rightCard{
+    background-color: rgb(209, 209, 209);
+    border: solid 2px rgb(228, 228, 228);
+
+}
+
+.transparent{
+    opacity: 0;
+}
+
+.navContainer {
+    display: flex;
+    justify-content: end;
+    align-items: end;
+    align-content: end;
+}
+
+.logOutButton{
+margin-left: 60rem;
+}

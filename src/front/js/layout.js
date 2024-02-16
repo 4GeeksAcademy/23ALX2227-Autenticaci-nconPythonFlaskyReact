@@ -4,13 +4,15 @@ import ScrollToTop from "./component/scrollToTop";
 import { BackendURL } from "./component/backendURL";
 
 import { Home } from "./pages/home";
+import { Demo } from "./pages/demo";
 import { Single } from "./pages/single";
 import injectContext from "./store/appContext";
 
+import { Navbar } from "./component/navbar";
 import { Footer } from "./component/footer";
-import Signup from "./pages/Signup"
-import Login from "./pages/Login";
-import Private from "./pages/Private";
+import CallSignup from "./pages/CallSignup.js";
+import CallLogin  from "./pages/CallLogin.js";
+import CallPrivate from "./pages/CallPrivate.js";
 
 //create your first component
 const Layout = () => {
@@ -24,11 +26,13 @@ const Layout = () => {
         <div>
             <BrowserRouter basename={basename}>
                 <ScrollToTop>
+                    <Navbar />
                     <Routes>
                         <Route element={<Home />} path="/" />
-                        <Route element={<Signup />} path="/signup" />
-                        <Route element={<Login />} path="/login" />
-                        <Route element={<Private />} path="/private" />
+                        <Route element={<Demo />} path="/demo" />
+                        <Route element={<CallSignup />} path="/signup" />
+                        <Route element={<CallLogin />} path="/login" />
+                        <Route element={<CallPrivate />} path="/private" />
                         <Route element={<Single />} path="/single/:theid" />
                         <Route element={<h1>Not found!</h1>} />
                     </Routes>
